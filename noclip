@@ -1,4 +1,4 @@
--- Spam Korumasız, Anlık Tepki Veren Türkçe NoClip Scripti
+-- Klasik, Sade ve Optimize Edilmiş Türkçe NoClip Scripti
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -108,6 +108,7 @@ local minCorner = Instance.new("UICorner")
 minCorner.CornerRadius = UDim.new(0, 4)
 minCorner.Parent = minimizeBtn
 
+-- 2'li Üst Sekmeler (NoClip ve Ayarlar)
 local tabFrame = Instance.new("Frame")
 tabFrame.Parent = mainFrame
 tabFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
@@ -142,6 +143,7 @@ contentContainer.BackgroundTransparency = 1
 contentContainer.Position = UDim2.new(0, 0, 0, 55)
 contentContainer.Size = UDim2.new(1, 0, 1, -55)
 
+-- 1. NoClip Sayfası
 local noclipPage = Instance.new("Frame")
 noclipPage.Parent = contentContainer
 noclipPage.BackgroundTransparency = 1
@@ -162,6 +164,7 @@ local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 6)
 toggleCorner.Parent = noclipToggle
 
+-- 2. Ayarlar Sayfası (Sadece Menüyü Sil)
 local settingsPage = Instance.new("Frame")
 settingsPage.Parent = contentContainer
 settingsPage.BackgroundTransparency = 1
@@ -182,6 +185,7 @@ local delCorner = Instance.new("UICorner")
 delCorner.CornerRadius = UDim.new(0, 6)
 delCorner.Parent = deleteMenuBtn
 
+-- Sabit "NC" Sürüklenebilir Buton
 local floatBtn = Instance.new("TextButton")
 floatBtn.Name = "FloatingButton"
 floatBtn.Parent = screenGui
@@ -213,7 +217,7 @@ player.CharacterAdded:Connect(function()
     noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
 end)
 
--- NoClip Döngüsü
+-- NoClip Döngüsü (Emote, Fly ve Wall Hop Uyumlu)
 local noclipConnection = RunService.Stepped:Connect(function()
     if not noclipEnabled then return end
     local char = player.Character
@@ -240,6 +244,7 @@ local noclipConnection = RunService.Stepped:Connect(function()
     end
 end)
 
+-- Sekme Geçişleri
 noclipTabBtn.MouseButton1Click:Connect(function()
     noclipPage.Visible = true
     settingsPage.Visible = false
@@ -258,7 +263,7 @@ settingsTabBtn.MouseButton1Click:Connect(function()
     noclipTabBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
 end)
 
--- Tamamen Spam Serbest (Anlık Tepki) Buton Olayı
+-- Spam Serbest NoClip Aç/Kapat
 noclipToggle.MouseButton1Click:Connect(function()
     noclipEnabled = not noclipEnabled
     _G.DeltaNoclipEnabled = noclipEnabled
@@ -310,4 +315,4 @@ deleteMenuBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-print("Spam Serbest Türkçe NoClip Menüsü Yüklendi!")
+print("Klasik Türkçe NoClip Menüsü Yüklendi!")
