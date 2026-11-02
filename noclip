@@ -1,4 +1,4 @@
--- Tüm Cihazlar ve Executor'lar İçin Emote + Fly + NoClip Tam Uyumlu Script
+-- Spam Korumasız, Anlık Tepki Veren Türkçe NoClip Scripti
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -6,90 +6,8 @@ local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local currentLang = "tr"
 
--- Türkçe Karakter Yumuşatma
-local function normalizeText(text)
-    if not text then return "" end
-    text = string.lower(text)
-    text = string.gsub(text, "i̇", "i")
-    text = string.gsub(text, "ı", "i")
-    text = string.gsub(text, "ç", "c")
-    text = string.gsub(text, "ğ", "g")
-    text = string.gsub(text, "ö", "o")
-    text = string.gsub(text, "ş", "s")
-    text = string.gsub(text, "ü", "u")
-    return text
-end
-
--- Çeviri Sözlüğü (30 Dil)
-local translations = {
-    tr = {title = "NoClip Menüsü", noclip = "NoClip", settings = "Ayarlar", on = "NoClip: Açık", off = "NoClip: Kapalı", delete = "Menüyü Tamamen Sil", search = "Dil ara..."},
-    en = {title = "NoClip Menu", noclip = "NoClip", settings = "Settings", on = "NoClip: ON", off = "NoClip: OFF", delete = "Delete Menu Completely", search = "Search language..."},
-    es = {title = "Menú NoClip", noclip = "NoClip", settings = "Ajustes", on = "NoClip: ENC", off = "NoClip: APAG", delete = "Eliminar Menú por Completo", search = "Buscar idioma..."},
-    fr = {title = "Menu NoClip", noclip = "NoClip", settings = "Paramètres", on = "NoClip: ACTIF", off = "NoClip: INACTIF", delete = "Supprimer le Menu", search = "Rechercher..."},
-    de = {title = "NoClip Menü", noclip = "NoClip", settings = "Einstellungen", on = "NoClip: AN", off = "NoClip: AUS", delete = "Menü Komplett Löschen", search = "Sprache suchen..."},
-    ru = {title = "NoClip Меню", noclip = "NoClip", settings = "Настройки", on = "NoClip: ВКЛ", off = "NoClip: ВЫКЛ", delete = "Удалить Меню", search = "Поиск языка..."},
-    pt = {title = "Menu NoClip", noclip = "NoClip", settings = "Configurações", on = "NoClip: LIG", off = "NoClip: DES", delete = "Excluir Menu Completamente", search = "Pesquisar idioma..."},
-    it = {title = "Menu NoClip", noclip = "NoClip", settings = "Impostazioni", on = "NoClip: ACC", off = "NoClip: SPENTO", delete = "Elimina Menu Completamente", search = "Cerca lingua..."},
-    ja = {title = "NoClip メニュー", noclip = "NoClip", settings = "設定", on = "NoClip: オン", off = "NoClip: オフ", delete = "メニューを完全に削除", search = "言語を検索..."},
-    ko = {title = "NoClip 메뉴", noclip = "NoClip", settings = "설정", on = "NoClip: 켜짐", off = "NoClip: 꺼짐", delete = "메뉴 완전히 삭제", search = "언어 검색..."},
-    zh = {title = "NoClip 菜单", noclip = "NoClip", settings = "设置", on = "NoClip: 开启", off = "NoClip: 关闭", delete = "完全删除菜单", search = "搜索语言..."},
-    ar = {title = "قائمة NoClip", noclip = "NoClip", settings = "الإعدادات", on = "NoClip: تشغيل", off = "NoClip: إيقاف", delete = "حذف القائمة تماماً", search = "ابحث عن اللغة..."},
-    hi = {title = "NoClip मेनू", noclip = "NoClip", settings = "सेटिंग्स", on = "NoClip: चालू", off = "NoClip: बंद", delete = "मेनू पूरी तरह हटाएं", search = "भाषा खोजें..."},
-    id = {title = "Menu NoClip", noclip = "NoClip", settings = "Pengaturan", on = "NoClip: AKTIF", off = "NoClip: MATI", delete = "Hapus Menu Sepenuhnya", search = "Cari bahasa..."},
-    vi = {title = "Menu NoClip", noclip = "NoClip", settings = "Cài đặt", on = "NoClip: BẬT", off = "NoClip: TẮT", delete = "Xóa Hoàn Toàn Menu", search = "Tìm kiếm ngôn ngữ..."},
-    pl = {title = "Menu NoClip", noclip = "NoClip", settings = "Ustawienia", on = "NoClip: WŁ", off = "NoClip: WYŁ", delete = "Usuń Menu Całkowicie", search = "Szukaj języka..."},
-    nl = {title = "NoClip Menu", noclip = "NoClip", settings = "Instellingen", on = "NoClip: AAN", off = "NoClip: UIT", delete = "Menu Volledig Verwijderen", search = "Zoek taal..."},
-    uk = {title = "NoClip Меню", noclip = "NoClip", settings = "Налаштування", on = "NoClip: УВІМК", off = "NoClip: ВИМК", delete = "Видалити Меню Повністю", search = "Шукати мову..."},
-    el = {title = "Μενού NoClip", noclip = "NoClip", settings = "Ρυθμίσεις", on = "NoClip: ΕΝΕΡΓΟ", off = "NoClip: ΑΝΕΝΕΡΓΟ", delete = "Διαγραφή Μενού Εντελώς", search = "Αναζήτηση γλώσσας..."},
-    sv = {title = "NoClip Meny", noclip = "NoClip", settings = "Inställningar", on = "NoClip: PÅ", off = "NoClip: AV", delete = "Radera Meny Helt", search = "Sök språk..."},
-    cs = {title = "NoClip Menu", noclip = "NoClip", settings = "Nastavení", on = "NoClip: ZAP", off = "NoClip: VYP", delete = "Úplně smazat menu", search = "Hledat jazyk..."},
-    ro = {title = "Meniu NoClip", noclip = "NoClip", settings = "Setări", on = "NoClip: PORNIT", off = "NoClip: OPRIT", delete = "Șterge Meniul Complet", search = "Caută limbă..."},
-    hu = {title = "NoClip Menü", noclip = "NoClip", settings = "Beállítások", on = "NoClip: BE", off = "NoClip: KI", delete = "Menü Teljes Törlése", search = "Nyelv keresése..."},
-    da = {title = "NoClip Menu", noclip = "NoClip", settings = "Indstillinger", on = "NoClip: TIL", off = "NoClip: FRA", delete = "Slet Menu Fuldstændigt", search = "Søg sprog..."},
-    fi = {title = "NoClip Valikko", noclip = "NoClip", settings = "Asetukset", on = "NoClip: PÄÄLLÄ", off = "NoClip: POIS", delete = "Poista Valikko Kokonaan", search = "Etsi kieltä..."},
-    no = {title = "NoClip Meny", noclip = "NoClip", settings = "Innstillinger", on = "NoClip: PÅ", off = "NoClip: AV", delete = "Slett Menyen Helt", search = "Søk språk..."},
-    bg = {title = "NoClip Меню", noclip = "NoClip", settings = "Настройки", on = "NoClip: ВКЛ", off = "NoClip: ИЗКЛ", delete = "Изтрий Менюто Напълно", search = "Търсене на език..."},
-    hr = {title = "NoClip Izbornik", noclip = "NoClip", settings = "Postavke", on = "NoClip: UKL", off = "NoClip: ISKL", delete = "Izbriši Izbornik Potpuno", search = "Traži jezik..."},
-    sr = {title = "NoClip Мени", noclip = "NoClip", settings = "Подешавања", on = "NoClip: УКЛ", off = "NoClip: ИСКЛ", delete = "Обриши Мени У ЦЕЛОСТИ", search = "Претражи језик..."},
-    sk = {title = "NoClip Menu", noclip = "NoClip", settings = "Nastavenia", on = "NoClip: ZAP", off = "NoClip: VYP", delete = "Úplne vymazať menu", search = "Hladať jazyk..."}
-}
-
-local languageList = {
-    {code = "tr", name = "Türkçe", aliases = {"ingilizce", "turkce", "turkish", "turk"}},
-    {code = "en", name = "English", aliases = {"ingilizce", "english", "ing"}},
-    {code = "es", name = "Español", aliases = {"ispanyolca", "spanish", "espanol"}},
-    {code = "fr", name = "Français", aliases = {"fransizca", "french", "francais"}},
-    {code = "de", name = "Deutsch", aliases = {"almanca", "german", "deutsch"}},
-    {code = "ru", name = "Русский", aliases = {"rusca", "russian", "russkiy"}},
-    {code = "pt", name = "Português", aliases = {"portekizce", "portuguese", "portugues"}},
-    {code = "it", name = "Italiano", aliases = {"italyanca", "italian", "italiano"}},
-    {code = "ja", name = "日本語", aliases = {"japonca", "japanese", "nihongo"}},
-    {code = "ko", name = "한국어", aliases = {"korece", "korean", "hangul"}},
-    {code = "zh", name = "中文", aliases = {"cince", "chinese", "mandarin", "zhongwen"}},
-    {code = "ar", name = "العربية", aliases = {"arapca", "arabic", "arab"}},
-    {code = "hi", name = "हिन्दी", aliases = {"hintce", "hindi"}},
-    {code = "id", name = "Bahasa Indonesia", aliases = {"endonezyaca", "indonesian"}},
-    {code = "vi", name = "Tiếng Việt", aliases = {"vietnamca", "vietnamese"}},
-    {code = "pl", name = "Polski", aliases = {"lehce", "polish", "polski"}},
-    {code = "nl", name = "Nederlands", aliases = {"hollandaca", "dutch"}},
-    {code = "uk", name = "Українська", aliases = {"ukraynaca", "ukrainian"}},
-    {code = "el", name = "Ελληνικά", aliases = {"yunancca", "greek"}},
-    {code = "sv", name = "Svenska", aliases = {"isvece", "swedish"}},
-    {code = "cs", name = "Čeština", aliases = {"cekce", "czech"}},
-    {code = "ro", name = "Română", aliases = {"romence", "romanian"}},
-    {code = "hu", name = "Magyar", aliases = {"macarca", "hungarian"}},
-    {code = "da", name = "Dansk", aliases = {"danimarkaca", "danish"}},
-    {code = "fi", name = "Suomi", aliases = {"fince", "finnish"}},
-    {code = "no", name = "Norsk", aliases = {"norvecce", "norwegian"}},
-    {code = "bg", name = "Български", aliases = {"bulgarca", "bulgarian"}},
-    {code = "hr", name = "Hrvatski", aliases = {"hirvatca", "croatian"}},
-    {code = "sr", name = "Српски", aliases = {"sirpca", "serbian"}},
-    {code = "sk", name = "Slovenčina", aliases = {"slovakca", "slovak"}}
-}
-
--- Evrensel Arayüz Hedefi
+-- Evrensel Arayüz Hedefi (Tüm Executor'lar İçin)
 local targetParent = CoreGui
 if gethui then
     targetParent = gethui()
@@ -106,14 +24,9 @@ screenGui.Name = "AdvancedNoClipGui"
 screenGui.Parent = targetParent
 screenGui.ResetOnSpawn = false
 
--- PC ve Dokunmatik Sürükleme Mantığı
+-- Sürükleme Mantığı (PC ve Dokunmatik)
 local function makeDraggable(guiObject)
     local dragging, dragInput, dragStart, startPos
-    
-    local function update(input)
-        local delta = input.Position - dragStart
-        guiObject.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
     
     guiObject.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -137,7 +50,8 @@ local function makeDraggable(guiObject)
     
     UserInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
-            update(input)
+            local delta = input.Position - dragStart
+            guiObject.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 end
@@ -148,8 +62,8 @@ mainFrame.Name = "MainFrame"
 mainFrame.Parent = screenGui
 mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 mainFrame.BorderSizePixel = 0
-mainFrame.Position = UDim2.new(0.5, -122, 0.5, -125)
-mainFrame.Size = UDim2.new(0, 245, 0, 250)
+mainFrame.Position = UDim2.new(0.5, -112, 0.5, -90)
+mainFrame.Size = UDim2.new(0, 225, 0, 180)
 mainFrame.Active = true
 mainFrame.Visible = true
 
@@ -237,7 +151,7 @@ noclipPage.Visible = true
 local noclipToggle = Instance.new("TextButton")
 noclipToggle.Parent = noclipPage
 noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-noclipToggle.Position = UDim2.new(0.1, 0, 0.3, 0)
+noclipToggle.Position = UDim2.new(0.1, 0, 0.25, 0)
 noclipToggle.Size = UDim2.new(0.8, 0, 0, 45)
 noclipToggle.Font = Enum.Font.GothamSemibold
 noclipToggle.Text = "NoClip: Kapalı"
@@ -248,80 +162,24 @@ local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 6)
 toggleCorner.Parent = noclipToggle
 
-local settingsScroll = Instance.new("ScrollingFrame")
-settingsScroll.Parent = contentContainer
-settingsScroll.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-settingsScroll.BackgroundTransparency = 1
-settingsScroll.BorderSizePixel = 0
-settingsScroll.Size = UDim2.new(1, 0, 1, 0)
-settingsScroll.CanvasSize = UDim2.new(0, 0, 0, 200)
-settingsScroll.ScrollBarThickness = 4
-settingsScroll.Visible = false
-
-local settingsLayout = Instance.new("UIListLayout")
-settingsLayout.Parent = settingsScroll
-settingsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-settingsLayout.Padding = UDim.new(0, 6)
-settingsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
-local searchBox = Instance.new("TextBox")
-searchBox.Parent = settingsScroll
-searchBox.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
-searchBox.Size = UDim2.new(0.84, 0, 0, 25)
-searchBox.Font = Enum.Font.Gotham
-searchBox.PlaceholderText = "Dil ara..."
-searchBox.Text = ""
-searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-searchBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
-searchBox.TextSize = 11
-searchBox.ClearTextOnFocus = false
-searchBox.LayoutOrder = 1
-
-local searchCorner = Instance.new("UICorner")
-searchCorner.CornerRadius = UDim.new(0, 4)
-searchCorner.Parent = searchBox
-
-local countLabel = Instance.new("TextLabel")
-countLabel.Parent = settingsScroll
-countLabel.BackgroundTransparency = 1
-countLabel.Size = UDim2.new(0.84, 0, 0, 15)
-countLabel.Font = Enum.Font.GothamBold
-countLabel.Text = "Diller (30)"
-countLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-countLabel.TextSize = 10
-countLabel.TextXAlignment = Enum.TextXAlignment.Left
-countLabel.LayoutOrder = 2
-
-local langScroll = Instance.new("ScrollingFrame")
-langScroll.Parent = settingsScroll
-langScroll.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-langScroll.BorderSizePixel = 0
-langScroll.Size = UDim2.new(0.84, 0, 0, 85)
-langScroll.CanvasSize = UDim2.new(0, 0, 0, #languageList * 22)
-langScroll.ScrollBarThickness = 4
-langScroll.LayoutOrder = 3
-
-local langScrollCorner = Instance.new("UICorner")
-langScrollCorner.CornerRadius = UDim.new(0, 4)
-langScrollCorner.Parent = langScroll
-
-local uiListLayout = Instance.new("UIListLayout")
-uiListLayout.Parent = langScroll
-uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-uiListLayout.Padding = UDim.new(0, 2)
+local settingsPage = Instance.new("Frame")
+settingsPage.Parent = contentContainer
+settingsPage.BackgroundTransparency = 1
+settingsPage.Size = UDim2.new(1, 1, 1, 1)
+settingsPage.Visible = false
 
 local deleteMenuBtn = Instance.new("TextButton")
-deleteMenuBtn.Parent = settingsScroll
+deleteMenuBtn.Parent = settingsPage
 deleteMenuBtn.BackgroundColor3 = Color3.fromRGB(150, 40, 40)
-deleteMenuBtn.Size = UDim2.new(0.84, 0, 0, 32)
+deleteMenuBtn.Position = UDim2.new(0.1, 0, 0.25, 0)
+deleteMenuBtn.Size = UDim2.new(0.8, 0, 0, 40)
 deleteMenuBtn.Font = Enum.Font.GothamSemibold
 deleteMenuBtn.Text = "Menüyü Tamamen Sil"
 deleteMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 deleteMenuBtn.TextSize = 12
-deleteMenuBtn.LayoutOrder = 4
 
 local delCorner = Instance.new("UICorner")
-delCorner.CornerRadius = UDim.new(0, 4)
+delCorner.CornerRadius = UDim.new(0, 6)
 delCorner.Parent = deleteMenuBtn
 
 local floatBtn = Instance.new("TextButton")
@@ -343,133 +201,40 @@ local floatCorner = Instance.new("UICorner")
 floatCorner.CornerRadius = UDim.new(1, 0)
 floatCorner.Parent = floatBtn
 
-local langButtons = {}
-local function updateTexts()
-    local t = translations[currentLang] or translations["tr"]
-    titleLabel.Text = t.title
-    noclipTabBtn.Text = t.noclip
-    settingsTabBtn.Text = t.settings
-    deleteMenuBtn.Text = t.delete
-    searchBox.PlaceholderText = t.search
-    
-    local noclipActive = _G.DeltaNoclipEnabled or false
-    noclipToggle.Text = noclipActive and t.on or t.off
-end
-
-for idx, lang in ipairs(languageList) do
-    local langBtn = Instance.new("TextButton")
-    langBtn.Parent = langScroll
-    langBtn.BackgroundColor3 = (lang.code == currentLang) and Color3.fromRGB(60, 100, 60) or Color3.fromRGB(45, 45, 52)
-    langBtn.Size = UDim2.new(1, 0, 0, 20)
-    langBtn.Font = Enum.Font.Gotham
-    langBtn.Text = lang.name .. " (" .. lang.code .. ")"
-    langBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    langBtn.TextSize = 11
-    langBtn.LayoutOrder = idx
-
-    local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 3)
-    btnCorner.Parent = langBtn
-
-    langBtn.MouseButton1Click:Connect(function()
-        currentLang = lang.code
-        updateTexts()
-        
-        for _, item in pairs(langButtons) do
-            if item.code == currentLang then
-                item.btn.BackgroundColor3 = Color3.fromRGB(60, 100, 60)
-            else
-                item.btn.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
-            end
-        end
-    end)
-
-    table.insert(langButtons, {
-        btn = langBtn, 
-        name = normalizeText(lang.name), 
-        code = normalizeText(lang.code), 
-        aliases = lang.aliases, 
-        defaultOrder = idx
-    })
-end
-
-searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-    local query = normalizeText(searchBox.Text)
-    
-    if query == "" then
-        for _, item in ipairs(langButtons) do
-            item.btn.Visible = true
-            item.btn.LayoutOrder = item.defaultOrder
-        end
-        langScroll.CanvasPosition = Vector2.new(0, 0)
-        return
-    end
-
-    for _, item in ipairs(langButtons) do
-        local matchFound = false
-        local priorityScore = 1000
-
-        if string.find(item.name, query) then
-            matchFound = true
-            priorityScore = 1
-        elseif string.find(item.code, query) then
-            matchFound = true
-            priorityScore = 2
-        else
-            for aliasIdx, alias in ipairs(item.aliases) do
-                local normalizedAlias = normalizeText(alias)
-                if string.find(normalizedAlias, query) then
-                    matchFound = true
-                    priorityScore = aliasIdx + 2
-                    break
-                end
-            end
-        end
-
-        if matchFound then
-            item.btn.Visible = true
-            item.btn.LayoutOrder = priorityScore
-        else
-            item.btn.Visible = false
-            item.btn.LayoutOrder = 9999
-        end
-    end
-    
-    langScroll.CanvasPosition = Vector2.new(0, 0)
-end)
-
 _G.DeltaNoclipEnabled = false
 local noclipEnabled = false
 
--- Emote + Fly Düzeltmeli Akıllı NoClip Döngüsü
+-- Karakter Yeniden Doğduğunda (Respawn) Güvenlik Koruması
+player.CharacterAdded:Connect(function()
+    noclipEnabled = false
+    _G.DeltaNoclipEnabled = false
+    noclipToggle.Text = "NoClip: Kapalı"
+    noclipToggle.TextColor3 = Color3.fromRGB(255, 100, 100)
+    noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+end)
+
+-- NoClip Döngüsü
 local noclipConnection = RunService.Stepped:Connect(function()
+    if not noclipEnabled then return end
     local char = player.Character
-    if char and noclipEnabled then
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not char then return end
+    
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid and humanoid.Health > 0 then
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+
+        if humanoid.PlatformStand then humanoid.PlatformStand = false end
+        if humanoid.Sit then humanoid.Sit = false end
+
         local hrp = char:FindFirstChild("HumanoidRootPart")
-        
-        if humanoid and humanoid.Health > 0 then
-            -- 1. NoClip parçaları kapalı tutar (Wall Hop aktif kalır)
-            for _, part in pairs(char:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
-            end
-
-            -- 2. Emote + Fly Kapandığında Karakterin Dümdüz Yere Yatmasını (Ragdoll) Engeller
-            if humanoid.PlatformStand then
-                humanoid.PlatformStand = false
-            end
-            if humanoid.Sit then
-                humanoid.Sit = false
-            end
-
-            -- 3. Aşırı düşüş hızını sınırlandırıp dik tutma koruması
-            if hrp then
-                local currentVel = hrp.AssemblyLinearVelocity
-                if currentVel.Y < -90 then
-                    hrp.AssemblyLinearVelocity = Vector3.new(currentVel.X, -90, currentVel.Z)
-                end
+        if hrp then
+            local currentVel = hrp.AssemblyLinearVelocity
+            if currentVel.Y < -90 then
+                hrp.AssemblyLinearVelocity = Vector3.new(currentVel.X, -90, currentVel.Z)
             end
         end
     end
@@ -477,7 +242,7 @@ end)
 
 noclipTabBtn.MouseButton1Click:Connect(function()
     noclipPage.Visible = true
-    settingsScroll.Visible = false
+    settingsPage.Visible = false
     noclipTabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
     noclipTabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     settingsTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
@@ -486,24 +251,24 @@ end)
 
 settingsTabBtn.MouseButton1Click:Connect(function()
     noclipPage.Visible = false
-    settingsScroll.Visible = true
+    settingsPage.Visible = true
     settingsTabBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
     settingsTabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     noclipTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     noclipTabBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
 end)
 
+-- Tamamen Spam Serbest (Anlık Tepki) Buton Olayı
 noclipToggle.MouseButton1Click:Connect(function()
     noclipEnabled = not noclipEnabled
     _G.DeltaNoclipEnabled = noclipEnabled
-    local t = translations[currentLang] or translations["tr"]
 
     if noclipEnabled then
-        noclipToggle.Text = t.on
+        noclipToggle.Text = "NoClip: Açık"
         noclipToggle.TextColor3 = Color3.fromRGB(100, 255, 100)
         noclipToggle.BackgroundColor3 = Color3.fromRGB(50, 100, 50)
     else
-        noclipToggle.Text = t.off
+        noclipToggle.Text = "NoClip: Kapalı"
         noclipToggle.TextColor3 = Color3.fromRGB(255, 100, 100)
         noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
 
@@ -545,5 +310,4 @@ deleteMenuBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-updateTexts()
-print("Emote Fizik Korumalı NoClip Menüsü Yüklendi!")
+print("Spam Serbest Türkçe NoClip Menüsü Yüklendi!")
