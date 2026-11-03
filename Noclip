@@ -1,4 +1,4 @@
--- Klasik, Sade ve Optimize Edilmiş Türkçe NoClip Scripti
+-- Ölünce Kapanmayan, Klasik ve Optimize Edilmiş Türkçe NoClip Scripti
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -208,16 +208,7 @@ floatCorner.Parent = floatBtn
 _G.DeltaNoclipEnabled = false
 local noclipEnabled = false
 
--- Karakter Yeniden Doğduğunda (Respawn) Güvenlik Koruması
-player.CharacterAdded:Connect(function()
-    noclipEnabled = false
-    _G.DeltaNoclipEnabled = false
-    noclipToggle.Text = "NoClip: Kapalı"
-    noclipToggle.TextColor3 = Color3.fromRGB(255, 100, 100)
-    noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-end)
-
--- NoClip Döngüsü (Emote, Fly ve Wall Hop Uyumlu)
+-- NoClip Döngüsü (Ölünce veya Reset atınca kapanmaz, yeni karakterde de çalışmaya devam eder)
 local noclipConnection = RunService.Stepped:Connect(function()
     if not noclipEnabled then return end
     local char = player.Character
@@ -315,4 +306,4 @@ deleteMenuBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-print("Klasik Türkçe NoClip Menüsü Yüklendi!")
+print("Ölünce Kapanmayan NoClip Menüsü Yüklendi!")
