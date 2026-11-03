@@ -1,4 +1,4 @@
--- Ölünce Kapanmayan, Klasik ve Optimize Edilmiş Türkçe NoClip Scripti
+-- v2.5.1 Ultra Optimize Edilmiş, Ölünce Kapanmayan Türkçe NoClip Scripti
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -24,7 +24,7 @@ screenGui.Name = "AdvancedNoClipGui"
 screenGui.Parent = targetParent
 screenGui.ResetOnSpawn = false
 
--- Sürükleme Mantığı (PC ve Dokunmatik)
+-- Optimize Edilmiş Sürükleme Mantığı (PC ve Dokunmatik)
 local function makeDraggable(guiObject)
     local dragging, dragInput, dragStart, startPos
     
@@ -164,7 +164,7 @@ local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 6)
 toggleCorner.Parent = noclipToggle
 
--- 2. Ayarlar Sayfası (Sadece Menüyü Sil)
+-- 2. Ayarlar Sayfası (Menüyü Sil + En Altta v2.5.1 Sürümü)
 local settingsPage = Instance.new("Frame")
 settingsPage.Parent = contentContainer
 settingsPage.BackgroundTransparency = 1
@@ -174,8 +174,8 @@ settingsPage.Visible = false
 local deleteMenuBtn = Instance.new("TextButton")
 deleteMenuBtn.Parent = settingsPage
 deleteMenuBtn.BackgroundColor3 = Color3.fromRGB(150, 40, 40)
-deleteMenuBtn.Position = UDim2.new(0.1, 0, 0.25, 0)
-deleteMenuBtn.Size = UDim2.new(0.8, 0, 0, 40)
+deleteMenuBtn.Position = UDim2.new(0.1, 0, 0.2, 0)
+deleteMenuBtn.Size = UDim2.new(0.8, 0, 0, 38)
 deleteMenuBtn.Font = Enum.Font.GothamSemibold
 deleteMenuBtn.Text = "Menüyü Tamamen Sil"
 deleteMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -184,6 +184,16 @@ deleteMenuBtn.TextSize = 12
 local delCorner = Instance.new("UICorner")
 delCorner.CornerRadius = UDim.new(0, 6)
 delCorner.Parent = deleteMenuBtn
+
+local versionLabel = Instance.new("TextLabel")
+versionLabel.Parent = settingsPage
+versionLabel.BackgroundTransparency = 1
+versionLabel.Position = UDim2.new(0, 0, 1, -22)
+versionLabel.Size = UDim2.new(1, 0, 0, 15)
+versionLabel.Font = Enum.Font.Gotham
+versionLabel.Text = "Sürüm: v2.5.1"
+versionLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+versionLabel.TextSize = 10
 
 -- Sabit "NC" Sürüklenebilir Buton
 local floatBtn = Instance.new("TextButton")
@@ -208,7 +218,7 @@ floatCorner.Parent = floatBtn
 _G.DeltaNoclipEnabled = false
 local noclipEnabled = false
 
--- NoClip Döngüsü (Ölünce veya Reset atınca kapanmaz, yeni karakterde de çalışmaya devam eder)
+-- Yüksek Performanslı Optimize Edilmiş NoClip Döngüsü
 local noclipConnection = RunService.Stepped:Connect(function()
     if not noclipEnabled then return end
     local char = player.Character
@@ -306,4 +316,4 @@ deleteMenuBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-print("Ölünce Kapanmayan NoClip Menüsü Yüklendi!")
+print("NoClip Menüsü v2.5.1 Optimize Edildi ve Yüklendi!")
