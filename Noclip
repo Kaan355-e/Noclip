@@ -1,4 +1,4 @@
--- v2.5.1 Ultra Optimize Edilmiş, Ölünce Kapanmayan Türkçe NoClip Scripti
+-- v2.5.2 Sürüm Görünürlük Düzeltmeli Türkçe NoClip Scripti
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -147,7 +147,7 @@ contentContainer.Size = UDim2.new(1, 0, 1, -55)
 local noclipPage = Instance.new("Frame")
 noclipPage.Parent = contentContainer
 noclipPage.BackgroundTransparency = 1
-noclipPage.Size = UDim2.new(1, 1, 1, 1)
+noclipPage.Size = UDim2.new(1, 0, 1, 0)
 noclipPage.Visible = true
 
 local noclipToggle = Instance.new("TextButton")
@@ -164,11 +164,11 @@ local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 6)
 toggleCorner.Parent = noclipToggle
 
--- 2. Ayarlar Sayfası (Menüyü Sil + En Altta v2.5.1 Sürümü)
+-- 2. Ayarlar Sayfası (Menüyü Sil + En Altta Net Görünür v2.5.2 Sürümü)
 local settingsPage = Instance.new("Frame")
 settingsPage.Parent = contentContainer
 settingsPage.BackgroundTransparency = 1
-settingsPage.Size = UDim2.new(1, 1, 1, 1)
+settingsPage.Size = UDim2.new(1, 0, 1, 0)
 settingsPage.Visible = false
 
 local deleteMenuBtn = Instance.new("TextButton")
@@ -190,10 +190,11 @@ versionLabel.Parent = settingsPage
 versionLabel.BackgroundTransparency = 1
 versionLabel.Position = UDim2.new(0, 0, 1, -22)
 versionLabel.Size = UDim2.new(1, 0, 0, 15)
-versionLabel.Font = Enum.Font.Gotham
-versionLabel.Text = "Sürüm: v2.5.1"
-versionLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
-versionLabel.TextSize = 10
+versionLabel.Font = Enum.Font.GothamMedium
+versionLabel.Text = "Sürüm: v2.5.2"
+versionLabel.TextColor3 = Color3.fromRGB(180, 180, 180) -- Daha net görünür renk
+versionLabel.TextSize = 11
+versionLabel.TextXAlignment = Enum.TextXAlignment.Center
 
 -- Sabit "NC" Sürüklenebilir Buton
 local floatBtn = Instance.new("TextButton")
@@ -316,4 +317,4 @@ deleteMenuBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-print("NoClip Menüsü v2.5.1 Optimize Edildi ve Yüklendi!")
+print("NoClip Menüsü v2.5.2 Yüklendi!")
